@@ -24,18 +24,18 @@ public class SimpleBankingAppTest {
 		// 3-Verify phase
 		// we see in the load function of the UUT that we have loaded 3 users, so let's verify that
 		if (SimpleBankingApp.users.size() == 3)
-			System.out.println(TestUtils.TEXT_COLOR_GREEN + "testLoadData: loadUserData: TC1 passed" + TestUtils.TEXT_COLOR_RESET);
+			TestUtils.printTestPassed("testLoadData: loadUserData: TC1");
 		else
-			System.out.println(TestUtils.TEXT_COLOR_RED + "testLoadData: loadUserData: TC1 FAILED" + TestUtils.TEXT_COLOR_RESET);
+			TestUtils.printTestFailed("testLoadData: loadUserData: TC1");
 
 		// The above only verification is basic (simple, weak) 
 		// To do STRONGER verification, we would need more assertions for user names and account balances, etc.
 		
 		SimpleBankingApp.loadAccountData();
 		if (SimpleBankingApp.accounts.size() == 4)
-			System.out.println(TestUtils.TEXT_COLOR_GREEN + "testLoadData: loadAccountData: TC1 passed" + TestUtils.TEXT_COLOR_RESET);
+			TestUtils.printTestPassed("testLoadData: loadAccountData: TC1");
 		else
-			System.out.println(TestUtils.TEXT_COLOR_RED + "testLoadData: loadAccountData: TC1 FAILED" + TestUtils.TEXT_COLOR_RESET);
+			TestUtils.printTestFailed("testLoadData: loadAccountData: TC1");
 		
 		// 4-Teardown phase: if our goal was to only test the load, as Teardown (mainApp.accounts)
 		// we would have deleted the loaded deleted from memory (variables users, and accounts), but we want
@@ -55,9 +55,9 @@ public class SimpleBankingAppTest {
 		// 3-verify
 		assert balanceBefore + depositAmount == balanceAfter;
 		if (balanceBefore + depositAmount == balanceAfter)
-			System.out.println(TestUtils.TEXT_COLOR_GREEN + "testDeposits: TC1 passed"+ TestUtils.TEXT_COLOR_RESET);
+			TestUtils.printTestPassed("testDeposits: TC1");
 		else {
-			System.out.println(TestUtils.TEXT_COLOR_RED + "testDeposits: TC1 FAILED XXX: balanceBefore + depositAmount != balanceAfter");
+			TestUtils.printTestFailed("testDeposits: TC1");
 			System.out.format("testDeposits: balanceBefore = %.2f ; depositAmount = %.2f ; balanceAfter = %.2f %s\n", 
 					balanceBefore , depositAmount , balanceAfter, TestUtils.TEXT_COLOR_RESET);
 		}
