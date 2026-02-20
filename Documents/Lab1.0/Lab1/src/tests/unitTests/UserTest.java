@@ -23,34 +23,39 @@ public class UserTest {
         for (int i = 0; i < 5; i++) {
             User testUser = new User(testUserNames[i], testPasswords[i], testFirstNames[i], testLastNames[i], testPhoneNumbers[i]);
 
+            String testName1 = "TC" + (i+1) + "-getUserName";
             if (testUser.getUserName().equals(testUserNames[i])) {
-                TestUtils.printTestPassed("TC" + (i+1) + "-getUserName passed");
+                TestUtils.printTestPassed(testName1);
             } else {
-                TestUtils.printTestFailed("TC" + (i+1) + "-getUserName failed");
+                TestUtils.printTestFailed(testName1);
             }
 
+            String testName2 = "TC" + (i+1) + "-getPassword";
             if(testUser.getPassword().equals(testPasswords[i])){
-                TestUtils.printTestPassed("TC" + (i+1) + "-getPassword passed");
+                TestUtils.printTestPassed(testName2);
             } else {
-                TestUtils.printTestFailed("TC" + (i+1) + "-getPassword failed");
+                TestUtils.printTestFailed(testName2);
             }
 
+            String testName3 = "TC" + (i+1) + "-getFirstName";
             if(testUser.getFirstName().equals(testFirstNames[i])){
-                TestUtils.printTestPassed("TC" + (i+1) + "-getFirstName passed");
+                TestUtils.printTestPassed(testName3);
             } else{
-                TestUtils.printTestFailed("TC" + (i+1) + "-getFirstName failed");
+                TestUtils.printTestFailed(testName3);
             }
 
+            String testName4 = "TC" + (i+1) + "-getLastName";
             if(testUser.getLastName().equals(testLastNames[i])){
-                TestUtils.printTestPassed("TC" + (i+1) + "-getLastName passed");
+                TestUtils.printTestPassed(testName4);
             } else{
-                TestUtils.printTestFailed("TC" + (i+1) + "-getLastName failed");
+                TestUtils.printTestFailed(testName4);
             }
 
+            String testName5 = "TC" + (i+1) + "-getPhoneNumber";
             if(testUser.getPhoneNumber().equals(testPhoneNumbers[i])){
-                TestUtils.printTestPassed("TC" + (i+1) + "-getPhoneNumber passed");
+                TestUtils.printTestPassed(testName5);
             } else{
-                TestUtils.printTestFailed("TC" + (i+1) + "-getPhoneNumber failed");
+                TestUtils.printTestFailed(testName5);
             }
 
             System.out.println("toString(): " + testUser.toString());

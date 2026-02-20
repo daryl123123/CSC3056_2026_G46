@@ -5,12 +5,11 @@ public class TestUtils {
     public static final String TEXT_COLOR_GREEN = "\u001B[32m"; // from https://www.geeksforgeeks.org/how-to-print-colored-text-in-java-console/
     public static final String TEXT_COLOR_RED = "\u001B[31m"; 
     public static final String TEXT_COLOR_RESET = "\u001B[0m"; 
-
-    public static void printTestPassed(String message) {
-        System.out.println(TEXT_COLOR_GREEN + message + TEXT_COLOR_RESET);
+    public static void printTestPassed(String testName) {
+        System.out.println(TEXT_COLOR_GREEN + testName + TEXT_COLOR_RESET);
     }
 
-    public static void printTestFailed(String message) {
-        System.out.println(TEXT_COLOR_RED + message + TEXT_COLOR_RESET);
+    public static void printTestFailed(String testName) {
+        System.out.println(TEXT_COLOR_RED + testName + TEXT_COLOR_RESET);
     }
 }

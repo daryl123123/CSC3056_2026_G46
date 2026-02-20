@@ -1,4 +1,4 @@
-package tests.systemTests;
+package tests.unitTests;
 
 import java.util.Date;
 
@@ -23,25 +23,28 @@ public class TransactionTest {
         for (int i = 0; i < 5; i++) {
             Transaction testTransaction = new Transaction(testAccountNumbers[i], testAmounts[i], testTransactionDates[i]);
 
-            // Test getAccountNumber Pass or Fail (TC1)
+            // Test getAccountNumber
+            String testName1 = "TC" + (i+1) + "-getAccountNumber";
             if (testTransaction.getAccountNumber().equals(testAccountNumbers[i])) {
-                System.out.println(TestUtils.TEXT_COLOR_GREEN + "TC" + (i+1) + "-getAccountNumber passed" + TestUtils.TEXT_COLOR_RESET);
+                TestUtils.printTestPassed(testName1);
             } else {
-                System.out.println(TestUtils.TEXT_COLOR_RED + "TC" + (i+1) + "-getAccountNumber failed" + TestUtils.TEXT_COLOR_RESET);
+                TestUtils.printTestFailed(testName1);
             }
 
-            // Test getAmount pass or fail
+            // Test getAmount
+            String testName2 = "TC" + (i+1) + "-getAmount";
             if (testTransaction.getAmount() == testAmounts[i]) {
-                System.out.println(TestUtils.TEXT_COLOR_GREEN + "TC" + (i+1) + "-getAmount passed" + TestUtils.TEXT_COLOR_GREEN);
+                TestUtils.printTestPassed(testName2);
             } else {
-                System.out.println(TestUtils.TEXT_COLOR_RED + "TC" + (i+1) + "-getAmount failed" + TestUtils.TEXT_COLOR_RED);
+                TestUtils.printTestFailed(testName2);
             }
 
-            // Test getTransactionDate pass or fail
+            // Test getTransactionDate
+            String testName3 = "TC" + (i+1) + "-getTransactionDate";
             if (testTransaction.getTransactionDate().equals(testTransactionDates[i])) {
-                System.out.println(TestUtils.TEXT_COLOR_GREEN + "TC" + (i+1) + "-getTransactionDate passed" + TestUtils.TEXT_COLOR_GREEN);
+                TestUtils.printTestPassed(testName3);
             } else {
-                System.out.println(TestUtils.TEXT_COLOR_RED + "TC" + (i+1) + "-getTransactionDate failed" + TestUtils.TEXT_COLOR_RED);
+                TestUtils.printTestFailed(testName3);
             }
 
             // Print toString output

@@ -1,4 +1,4 @@
-package tests.systemTests;
+package tests.unitTests;
 
 import java.util.Date;
 
@@ -25,32 +25,36 @@ public class AccountTest {
         for (int i = 0; i < 5; i++) {
             Account testAccount = new Account(testAccountNumbers[i], testUsernames[i], testAccountTypes[i], testOpeningDates[i]);
 
-            // Test getAccountNumber Pass or Fail (TC1)
+            // Test getAccountNumber
+            String testName1 = "TC" + (i+1) + "-getAccountNumber";
             if (testAccount.getAccountNumber().equals(testAccountNumbers[i])) {
-                System.out.println(TestUtils.TEXT_COLOR_GREEN + "TC" + (i+1) + "-getAccountNumber passed" + TestUtils.TEXT_COLOR_RESET);
+                TestUtils.printTestPassed(testName1);
             } else {
-                System.out.println(TestUtils.TEXT_COLOR_RED + "TC" + (i+1) + "-getAccountNumber failed" + TestUtils.TEXT_COLOR_RESET);
+                TestUtils.printTestFailed(testName1);
             }
 
-            // Test getUsernameOfAccountHolder Pass or Fail (TC2)
+            // Test getUsernameOfAccountHolder
+            String testName2 = "TC" + (i+1) + "-getUsernameOfAccountHolder";
             if (testAccount.getUsernameOfAccountHolder().equals(testUsernames[i])) {
-                System.out.println(TestUtils.TEXT_COLOR_GREEN + "TC" + (i+1) + "-getUsernameOfAccountHolder passed" + TestUtils.TEXT_COLOR_RESET);
+                TestUtils.printTestPassed(testName2);
             } else {
-                System.out.println(TestUtils.TEXT_COLOR_RED + "TC" + (i+1) + "-getUsernameOfAccountHolder failed" + TestUtils.TEXT_COLOR_RESET);
+                TestUtils.printTestFailed(testName2);
             }
 
-            // Test getAccountType Pass or Fail (TC3)
+            // Test getAccountType
+            String testName3 = "TC" + (i+1) + "-getAccountType";
             if (testAccount.getAccountType().equals(testAccountTypes[i])) {
-                System.out.println(TestUtils.TEXT_COLOR_GREEN + "TC" + (i+1) + "-getAccountType passed" + TestUtils.TEXT_COLOR_RESET);
+                TestUtils.printTestPassed(testName3);
             } else {
-                System.out.println(TestUtils.TEXT_COLOR_RED + "TC" + (i+1) + "-getAccountType failed" + TestUtils.TEXT_COLOR_RESET);
+                TestUtils.printTestFailed(testName3);
             }
 
-            // Test getAccountOpeningDate Pass or Fail (TC4)
+            // Test getAccountOpeningDate
+            String testName4 = "TC" + (i+1) + "-getAccountOpeningDate";
             if (testAccount.getAccountOpeningDate().equals(testOpeningDates[i])) {
-                System.out.println(TestUtils.TEXT_COLOR_GREEN + "TC" + (i+1) + "-getAccountOpeningDate passed" + TestUtils.TEXT_COLOR_RESET);
+                TestUtils.printTestPassed(testName4);
             } else {
-                System.out.println(TestUtils.TEXT_COLOR_RED + "TC" + (i+1) + "-getAccountOpeningDate failed" + TestUtils.TEXT_COLOR_RESET);
+                TestUtils.printTestFailed(testName4);
             }
 
             // Print toString output
