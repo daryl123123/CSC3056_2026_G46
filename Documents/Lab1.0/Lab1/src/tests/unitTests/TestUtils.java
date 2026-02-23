@@ -1,4 +1,4 @@
-package utils;
+package tests.unitTests;
 
 public class TestUtils {
 	
