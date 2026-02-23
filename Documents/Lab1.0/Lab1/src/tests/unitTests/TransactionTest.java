@@ -25,10 +25,19 @@ public class TransactionTest {
 
             // Test getAccountNumber
             String testName1 = "TC" + (i+1) + "-getAccountNumber";
-            if (testTransaction.getAccountNumber().equals(testAccountNumbers[i])) {
-                TestUtils.printTestPassed(testName1);
+            // Intentionally fail if/else for TC2 only
+            if (i == 1) {
+                if (testTransaction.getAccountNumber().equals("FAIL-CASE")) {
+                    TestUtils.printTestPassed(testName1);
+                } else {
+                    TestUtils.printTestFailed(testName1); // This will always fail for TC2
+                }
             } else {
-                TestUtils.printTestFailed(testName1);
+                if (testTransaction.getAccountNumber().equals(testAccountNumbers[i])) {
+                    TestUtils.printTestPassed(testName1);
+                } else {
+                    TestUtils.printTestFailed(testName1);
+                }
             }
 
             // Test getAmount
@@ -46,6 +55,17 @@ public class TransactionTest {
             } else {
                 TestUtils.printTestFailed(testName3);
             }
+
+            // Intentionally fail the amount assertion for TC1 only
+            if (i == 0) {
+                assert testTransaction.getAmount() == -1.0 : "Amount does not match for " + testName2 + " (intentional fail)";
+            } else {
+                assert testTransaction.getAmount() == testAmounts[i] : "Amount does not match for " + testName2;
+            }
+
+            // Assert statements for the remaining fields
+            assert testTransaction.getAccountNumber().equals(testAccountNumbers[i]) : "Account number does not match for " + testName1;
+            assert testTransaction.getTransactionDate().equals(testTransactionDates[i]) : "Transaction date does not match for " + testName3;
 
             // Print toString output
             System.out.println("toString(): " + testTransaction.toString());

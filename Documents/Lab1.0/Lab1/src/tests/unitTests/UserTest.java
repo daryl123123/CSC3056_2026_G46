@@ -24,10 +24,19 @@ public class UserTest {
             User testUser = new User(testUserNames[i], testPasswords[i], testFirstNames[i], testLastNames[i], testPhoneNumbers[i]);
 
             String testName1 = "TC" + (i+1) + "-getUserName";
-            if (testUser.getUserName().equals(testUserNames[i])) {
-                TestUtils.printTestPassed(testName1);
+            // Intentionally fail if/else for TC2 only
+            if (i == 1) {
+                if (testUser.getUserName().equals("FAIL-CASE")) {
+                    TestUtils.printTestPassed(testName1);
+                } else {
+                    TestUtils.printTestFailed(testName1); // This will always fail for TC2
+                }
             } else {
-                TestUtils.printTestFailed(testName1);
+                if (testUser.getUserName().equals(testUserNames[i])) {
+                    TestUtils.printTestPassed(testName1);
+                } else {
+                    TestUtils.printTestFailed(testName1);
+                }
             }
 
             String testName2 = "TC" + (i+1) + "-getPassword";
@@ -54,12 +63,18 @@ public class UserTest {
             String testName5 = "TC" + (i+1) + "-getPhoneNumber";
             if(testUser.getPhoneNumber().equals(testPhoneNumbers[i])){
                 TestUtils.printTestPassed(testName5);
-            } else{
+            } else {
                 TestUtils.printTestFailed(testName5);
             }
 
+            // Intentionally fail the password assertion for TC1 only
+            if (i == 0) {
+                assert testUser.getPassword().equals("WRONGPASS") : "Password does not match for " + testName2 + " (intentional fail)";
+            } else {
+                assert testUser.getPassword().equals(testPasswords[i]) : "Password does not match for " + testName2;
+            }
+
             // Assert statements for the remaining fields
-            assert testUser.getPassword().equals(testPasswords[i]) : "Password does not match for " + testName2;
             assert testUser.getFirstName().equals(testFirstNames[i]) : "First name does not match for " + testName3;
             assert testUser.getLastName().equals(testLastNames[i]) : "Last name does not match for " + testName4;
             assert testUser.getPhoneNumber().equals(testPhoneNumbers[i]) : "Phone number does not match for " + testName5;

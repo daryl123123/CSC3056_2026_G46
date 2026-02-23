@@ -27,10 +27,19 @@ public class AccountTest {
 
             // Test getAccountNumber
             String testName1 = "TC" + (i+1) + "-getAccountNumber";
-            if (testAccount.getAccountNumber().equals(testAccountNumbers[i])) {
-                TestUtils.printTestPassed(testName1);
+            // Intentionally fail if/else for TC2 only
+            if (i == 1) {
+                if (testAccount.getAccountNumber().equals("FAIL-CASE")) {
+                    TestUtils.printTestPassed(testName1);
+                } else {
+                    TestUtils.printTestFailed(testName1); // This will always fail for TC2
+                }
             } else {
-                TestUtils.printTestFailed(testName1);
+                if (testAccount.getAccountNumber().equals(testAccountNumbers[i])) {
+                    TestUtils.printTestPassed(testName1);
+                } else {
+                    TestUtils.printTestFailed(testName1);
+                }
             }
 
             // Test getUsernameOfAccountHolder
@@ -56,6 +65,18 @@ public class AccountTest {
             } else {
                 TestUtils.printTestFailed(testName4);
             }
+
+            // Intentionally fail the account type assertion for TC1 only
+            if (i == 0) {
+                assert testAccount.getAccountType().equals("WRONGTYPE") : "Account type does not match for " + testName3 + " (intentional fail)";
+            } else {
+                assert testAccount.getAccountType().equals(testAccountTypes[i]) : "Account type does not match for " + testName3;
+            }
+
+            // Assert statements for the remaining fields
+            assert testAccount.getAccountNumber().equals(testAccountNumbers[i]) : "Account number does not match for " + testName1;
+            assert testAccount.getUsernameOfAccountHolder().equals(testUsernames[i]) : "Username does not match for " + testName2;
+            assert testAccount.getAccountOpeningDate().equals(testOpeningDates[i]) : "Opening date does not match for " + testName4;
 
             // Print toString output
             System.out.println("toString(): " + testAccount.toString());
