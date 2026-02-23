@@ -1,7 +1,7 @@
 package tests.unitTests;
 
 import model.User;
-import utils.TestUtils;
+
 
 public class UserTest {
 
