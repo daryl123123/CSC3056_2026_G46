@@ -3,8 +3,6 @@ package tests.unitTests;
 import java.util.Date;
 
 import model.Transaction;
-
-
 public class TransactionTest {
 
     public static void main(String[] args) {

@@ -3,8 +3,6 @@ package tests.unitTests;
 import java.util.Date;
 
 import model.Account;
-
-
 public class AccountTest {
 
     public static void main(String[] args) {

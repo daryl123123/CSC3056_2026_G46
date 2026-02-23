@@ -76,9 +76,10 @@ public class SimpleBankingApp {
     public static double getBalance(String accountNumber) {
         double balance = 0.0;
         for (int i = 0; i < transactions.size(); i++) {
-            // Note: Make sure your Transaction class also uses getAccountNumber()
             if (transactions.get(i).getAccountNumber().equals(accountNumber)) {
-                balance += transactions.get(i).getAmount(); // Assumes getAmount() exists in Transaction
+                // Add this transaction amount to the running account balance.
+                //getAmount() returns a positive value for deposits, and a negative value for withdrawals.
+                balance += transactions.get(i).getAmount();
             }
         }
         return balance;

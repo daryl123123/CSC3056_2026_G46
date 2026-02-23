@@ -1,8 +1,6 @@
 package tests.unitTests;
 
 import model.User;
-
-
 public class UserTest {
 
     public static void main(String[] args) {
