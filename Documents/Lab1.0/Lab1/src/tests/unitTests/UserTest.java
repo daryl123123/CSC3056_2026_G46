@@ -1,6 +1,10 @@
 package tests.unitTests;
 
 import model.User;
+<<<<<<< HEAD
+=======
+
+>>>>>>> a5db6d214edddf046b1fe4836b2d8ac94850515a
 
 public class UserTest {
 
@@ -56,6 +60,12 @@ public class UserTest {
             } else{
                 TestUtils.printTestFailed(testName5);
             }
+
+            // Assert statements for the remaining fields
+            assert testUser.getPassword().equals(testPasswords[i]) : "Password does not match for " + testName2;
+            assert testUser.getFirstName().equals(testFirstNames[i]) : "First name does not match for " + testName3;
+            assert testUser.getLastName().equals(testLastNames[i]) : "Last name does not match for " + testName4;
+            assert testUser.getPhoneNumber().equals(testPhoneNumbers[i]) : "Phone number does not match for " + testName5;
 
             System.out.println("toString(): " + testUser.toString());
             System.out.println();
