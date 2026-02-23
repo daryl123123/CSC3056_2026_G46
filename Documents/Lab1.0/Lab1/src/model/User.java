@@ -80,9 +80,11 @@ public class User {
 	    this.phoneNumber = phoneNumber;
 	}
 
-	public String toString(){
-	    return userName + " Username: " + firstName + "First Name: " + lastName + "Last Name: " + "PhoneNumber " + phoneNumber; 
-	}
+	@Override
+    public String toString() {
+        return String.format("Username: %-15s | Name: %-10s %-12s | Phone: %-15s", 
+                             userName, firstName, lastName, phoneNumber);
+    }
 
 
 	}
