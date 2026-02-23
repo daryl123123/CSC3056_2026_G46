@@ -3,11 +3,6 @@ package tests.unitTests;
 import java.util.Date;
 
 import model.Account;
-<<<<<<< HEAD
-=======
-
->>>>>>> a5db6d214edddf046b1fe4836b2d8ac94850515a
-
 public class AccountTest {
 
     public static void main(String[] args) {

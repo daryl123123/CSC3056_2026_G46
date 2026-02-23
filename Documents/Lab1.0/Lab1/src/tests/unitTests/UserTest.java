@@ -1,11 +1,6 @@
 package tests.unitTests;
 
 import model.User;
-<<<<<<< HEAD
-=======
-
->>>>>>> a5db6d214edddf046b1fe4836b2d8ac94850515a
-
 public class UserTest {
 
     public static void main(String[] args) {
