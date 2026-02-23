@@ -81,10 +81,11 @@ public class User {
 	}
 
 	@Override
-    public String toString() {
-        return String.format("Username: %-15s | Name: %-10s %-12s | Phone: %-15s", 
-                             userName, firstName, lastName, phoneNumber);
-    }
+public String toString() {
+    // %-15s ensures the username always takes 15 spaces, keeping everything aligned
+    return String.format("Username: %-15s | Name: %-10s %-12s | Phone: %-15s", 
+                         userName, firstName, lastName, phoneNumber);
+}
 
 
 	}
