@@ -3,7 +3,6 @@ package tests.unitTests;
 import java.util.Date;
 
 import model.Transaction;
-import utils.TestUtils;
 
 public class TransactionTest {
 
