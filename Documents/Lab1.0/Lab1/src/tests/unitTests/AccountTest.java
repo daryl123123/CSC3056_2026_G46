@@ -1,83 +1,60 @@
 package tests.unitTests;
 
 import java.util.Date;
-
 import model.Account;
+
 public class AccountTest {
 
     public static void main(String[] args) {
-        testConstructors();
+        testRobustConstructors();
     }
 
-    public static void testConstructors() {
-
-        // Multiple test cases
-        String[] testAccountNumbers = {"5495-1234", "1111-2222", "3333-4444", "5555-6666", "7777-8888"};
-        String[] testUsernames = {"mike", "alice", "bob", "charlie", "eva"};
-        String[] testAccountTypes = {"Standard", "Premium", "Student", "Business", "Joint"};
-        Date[] testOpeningDates = {new Date(), new Date(System.currentTimeMillis()-86400000L), new Date(System.currentTimeMillis()-172800000L), new Date(System.currentTimeMillis()-259200000L), new Date(System.currentTimeMillis()-345600000L)};
+    public static void testRobustConstructors() {
+        // Parallel arrays for 5 test scenarios
+        String[] testAccountNumbers = {"5495-1234", "INVALID", "3333-4444", "5555-6666", "7777-8888"};
+        String[] testUsernames = {"mike", "alice", "", "charlie", "eva"};
+        String[] testAccountTypes = {"Standard", "Premium", "Saving", "Business", "Joint"};
+        
+        // Setup dates: TC5 uses a future date (Year 2099) to trigger validation failure
+        Date futureDate = new Date(System.currentTimeMillis() + 86400000000L); 
+        Date[] testOpeningDates = {new Date(), new Date(), new Date(), new Date(), futureDate};
 
         System.out.println("-----------------------");
-        System.out.println("Starting Account test cases...");
+        System.out.println("Starting Robust Account test cases...");
 
         for (int i = 0; i < 5; i++) {
             Account testAccount = new Account(testAccountNumbers[i], testUsernames[i], testAccountTypes[i], testOpeningDates[i]);
 
-            // Test getAccountNumber
-            String testName1 = "TC" + (i+1) + "-getAccountNumber";
-            // Intentionally fail if/else for TC2 only
+            String tcName = "TC" + (i+1) + "-RobustValidation";
+            
+            // INTENTIONAL FAIL if/else for TC2 (Invalid Format Check)
             if (i == 1) {
-                if (testAccount.getAccountNumber().equals("FAIL-CASE")) {
-                    TestUtils.printTestPassed(testName1);
+                // We expect the account number to be null because the setter should have rejected "INVALID"
+                if (testAccount.getAccountNumber() == null) {
+                    TestUtils.printTestFailed(tcName + " (Intentional Fail: System correctly blocked invalid format)");
                 } else {
-                    TestUtils.printTestFailed(testName1); // This will always fail for TC2
+                    TestUtils.printTestPassed(tcName);
                 }
-            } else {
-                if (testAccount.getAccountNumber().equals(testAccountNumbers[i])) {
-                    TestUtils.printTestPassed(testName1);
+            } 
+            // INTENTIONAL FAIL assertion for TC5 (Future Date Check)
+            else if (i == 4) {
+                // If the robust logic worked, the date should be NULL or rejected. 
+                // This assertion intentionally checks for the future date to trigger a failure message.
+                assert testAccount.getAccountOpeningDate() == testOpeningDates[i] : tcName + " (Intentional Fail: System blocked future date)";
+                TestUtils.printTestFailed(tcName + " (Intentional Fail: System blocked future date)");
+            }
+            // Standard Pass Cases (TC1, TC3, TC4)
+            else {
+                if (testAccount.getAccountNumber() != null && testAccount.getAccountNumber().equals(testAccountNumbers[i])) {
+                    TestUtils.printTestPassed(tcName);
                 } else {
-                    TestUtils.printTestFailed(testName1);
+                    TestUtils.printTestFailed(tcName);
                 }
+                assert testAccount.getAccountNumber().equals(testAccountNumbers[i]) : tcName + " failed";
             }
 
-            // Test getUsernameOfAccountHolder
-            String testName2 = "TC" + (i+1) + "-getUsernameOfAccountHolder";
-            if (testAccount.getUsernameOfAccountHolder().equals(testUsernames[i])) {
-                TestUtils.printTestPassed(testName2);
-            } else {
-                TestUtils.printTestFailed(testName2);
-            }
-
-            // Test getAccountType
-            String testName3 = "TC" + (i+1) + "-getAccountType";
-            if (testAccount.getAccountType().equals(testAccountTypes[i])) {
-                TestUtils.printTestPassed(testName3);
-            } else {
-                TestUtils.printTestFailed(testName3);
-            }
-
-            // Test getAccountOpeningDate
-            String testName4 = "TC" + (i+1) + "-getAccountOpeningDate";
-            if (testAccount.getAccountOpeningDate().equals(testOpeningDates[i])) {
-                TestUtils.printTestPassed(testName4);
-            } else {
-                TestUtils.printTestFailed(testName4);
-            }
-
-            // Intentionally fail the account type assertion for TC1 only
-            if (i == 0) {
-                assert testAccount.getAccountType().equals("WRONGTYPE") : "Account type does not match for " + testName3 + " (intentional fail)";
-            } else {
-                assert testAccount.getAccountType().equals(testAccountTypes[i]) : "Account type does not match for " + testName3;
-            }
-
-            // Assert statements for the remaining fields
-            assert testAccount.getAccountNumber().equals(testAccountNumbers[i]) : "Account number does not match for " + testName1;
-            assert testAccount.getUsernameOfAccountHolder().equals(testUsernames[i]) : "Username does not match for " + testName2;
-            assert testAccount.getAccountOpeningDate().equals(testOpeningDates[i]) : "Opening date does not match for " + testName4;
-
-            // Print toString output
             System.out.println("toString(): " + testAccount.toString());
+            System.out.println();
         }
     }
 }

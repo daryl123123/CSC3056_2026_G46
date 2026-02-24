@@ -68,10 +68,37 @@ public class SimpleBankingApp {
         System.out.println();
     }
     
-    public static void addTransaction(String accountNumber, double amount) { 
-        Transaction aTransaction = new Transaction(accountNumber, amount, Calendar.getInstance().getTime());
-        transactions.add(aTransaction);
+  public static void addTransaction(String accountNumber, double amount) {
+    // First, we must validate if the account exists in the system registry
+    boolean accountExists = false;
+    for (Account account : accounts) {
+        if (account.getAccountNumber().equals(accountNumber)) {
+            accountExists = true;
+            break;
+        }
     }
+
+    // If the account number is not found, we reject the transaction immediately
+    if (!accountExists) {
+        System.err.println("Transaction Rejected: The account " + accountNumber + " was not found in our records.");
+        return;
+    }
+
+    // Second, we implement overdraft protection to prevent negative balances
+    if (amount < 0) {
+        double currentBalance = getBalance(accountNumber);
+        if (currentBalance + amount < 0) {
+            System.err.println("Transaction Rejected: Insufficient funds in account " + accountNumber);
+            System.err.println("Current Balance: $" + currentBalance + " | Attempted Withdrawal: $" + Math.abs(amount));
+            return;
+        }
+    }
+
+    // Only if both validations pass do we create the transaction and add it to the vector
+    Transaction aTransaction = new Transaction(accountNumber, amount, Calendar.getInstance().getTime());
+    transactions.add(aTransaction);
+    System.out.println("Transaction successfully processed for account " + accountNumber);
+}
     
     public static double getBalance(String accountNumber) {
         double balance = 0.0;
@@ -84,6 +111,24 @@ public class SimpleBankingApp {
         }
         return balance;
     }
+
+    public static void applyInterestToSavingAccounts() {
+    System.out.println("\n--- Processing Monthly Interest (3%) ---");
+    for (Account account : accounts) {
+        // Validation Gate: Only for Saving accounts with positive balances
+        if (account.getAccountType().equalsIgnoreCase("Saving")) {
+            double currentBalance = getBalance(account.getAccountNumber());
+            if (currentBalance > 0) {
+                double interest = currentBalance * 0.03;
+                addTransaction(account.getAccountNumber(), interest);
+                System.out.format("Interest of $%.2f applied to Saving Account: %s\n", 
+                                  interest, account.getAccountNumber());
+            }
+        }
+    }
+}
+
+    
     
     public static void main(String[] args) {
         loadUserData();
@@ -99,6 +144,7 @@ public class SimpleBankingApp {
         
         addTransaction("5495-1234", 520.00);
         addTransaction("9999-1111", 21.00); 
+        applyInterestToSavingAccounts(); 
         
         System.out.println("Account: after the 2nd/3rd addTransaction function calls...");
         printAllAccounts();

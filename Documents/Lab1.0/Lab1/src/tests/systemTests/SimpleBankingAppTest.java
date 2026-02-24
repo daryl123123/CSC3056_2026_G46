@@ -5,54 +5,37 @@ import tests.unitTests.TestUtils;
 
 public class SimpleBankingAppTest {
 
-    
     // system under test (SUT):
-    //static SimpleBankingApp mainApp = new SimpleBankingApp ();
+    static SimpleBankingApp mainApp = new SimpleBankingApp();
 
-    // this test method (test case) verifies if the data load feature of the class (unit or component) 
-    // under test (UUT) works properly
+    /**
+     * Verifies if the data load feature works properly.
+     */
     public static void testLoadData() {
-        // Reminder: the classical Four-Phase test pattern (Setup-Exercise-Verify-Teardown
-        // http://xunitpatterns.com/Four%20Phase%20Test.html 
-        
-        // 1-Setup phase: none
-        
-        // 2-Exercise phase
-        //Force push
         SimpleBankingApp.loadUserData();
 
-        // 3-Verify phase
-        // we see in the load function of the UUT that we have loaded 3 users, so let's verify that
         if (SimpleBankingApp.users.size() == 3)
             TestUtils.printTestPassed("testLoadData: loadUserData: TC1");
         else
             TestUtils.printTestFailed("testLoadData: loadUserData: TC1");
 
-        // The above only verification is basic (simple, weak) 
-        // To do STRONGER verification, we would need more assertions for user names and account balances, etc.
-        
         SimpleBankingApp.loadAccountData();
         if (SimpleBankingApp.accounts.size() == 4)
             TestUtils.printTestPassed("testLoadData: loadAccountData: TC1");
         else
             TestUtils.printTestFailed("testLoadData: loadAccountData: TC1");
-        
-        // 4-Teardown phase: if our goal was to only test the load, as Teardown (mainApp.accounts)
-        // we would have deleted the loaded deleted from memory (variables users, and accounts), but we want
-        // to use those data in the other tests, thus, we do not do any Teardown in this test case
     }
     
-    // this test method (test case) verifies if the Deposit feature works properly
+    /**
+     * Verifies if the Deposit feature works properly.
+     */
     public static void testDeposits() {
-        // 1-Setup phase
         double balanceBefore = SimpleBankingApp.getBalance("5495-1234"); 
         double depositAmount = 50.21;
         
-        // 2-Exercise phase
         SimpleBankingApp.addTransaction("5495-1234", depositAmount);
         double balanceAfter = SimpleBankingApp.getBalance("5495-1234");
         
-        // 3-verify
         assert balanceBefore + depositAmount == balanceAfter;
         if (balanceBefore + depositAmount == balanceAfter)
             TestUtils.printTestPassed("testDeposits: TC1");
@@ -62,75 +45,173 @@ public class SimpleBankingAppTest {
                     balanceBefore , depositAmount , balanceAfter, TestUtils.TEXT_COLOR_RESET);
         }
         
-        // 4-tear-down: put the system state back in where it was
-        // read more about the tear-down phase of test cases: http://xunitpatterns.com/Four%20Phase%20Test.html
         SimpleBankingApp.addTransaction("5495-1234", -depositAmount);
     }
 
-    // this test method (test case) verifies if the Withdraw feature works properly
+    /**
+     * Verifies if the Withdraw feature works properly and identifies logic defects.
+     */
     public static void testWithdrawals() {
         // --- TC1: Standard Successful Withdrawal ---
-        // 1-Setup phase
         double balanceBefore = SimpleBankingApp.getBalance("5495-1234");
         double withdrawalAmount = 25.00;
         
-        // 2-Exercise phase
         SimpleBankingApp.addTransaction("5495-1234", -withdrawalAmount);
         double balanceAfter = SimpleBankingApp.getBalance("5495-1234");
         
-        // 3-Verify
         assert balanceBefore - withdrawalAmount == balanceAfter;
         if (balanceBefore - withdrawalAmount == balanceAfter)
             TestUtils.printTestPassed("testWithdrawals: TC1");
         else {
             TestUtils.printTestFailed("testWithdrawals: TC1");
-            System.out.format("testWithdrawals: balanceBefore = %.2f ; withdrawalAmount = %.2f ; balanceAfter = %.2f %s\n",
-                    balanceBefore, withdrawalAmount, balanceAfter, TestUtils.TEXT_COLOR_RESET);
         }
-        
-        // 4-Tear-down: restore system state by reversing the withdrawal
         SimpleBankingApp.addTransaction("5495-1234", withdrawalAmount);
 
         // --- TC2: Overdraft Prevention (Defect Test) ---
-        // 1-Setup phase: Using an account with $0.0 balance
         double balanceBeforeTC2 = SimpleBankingApp.getBalance("5495-1239"); 
         double withdrawalTC2 = 50.00;
-        
-        // 2-Exercise phase
         SimpleBankingApp.addTransaction("5495-1239", -withdrawalTC2);
         double balanceAfterTC2 = SimpleBankingApp.getBalance("5495-1239");
         
-        // 3-Verify: This should FAIL because the SUT allows negative balances
         if (balanceAfterTC2 == balanceBeforeTC2)
             TestUtils.printTestPassed("testWithdrawals: TC2 - Overdraft Prevention");
         else
             TestUtils.printTestFailed("testWithdrawals: TC2 - Overdraft Prevention (FAILED: Negative balance allowed)");
-
-        // 4-Tear-down: reverse the transaction to clean up memory
         SimpleBankingApp.addTransaction("5495-1239", withdrawalTC2);
 
         // --- TC3: Invalid Account Check (Defect Test) ---
-        // 1-Setup phase: Account number that doesn't exist
         String ghostAccount = "0000-0000";
-        
-        // 2-Exercise phase
         SimpleBankingApp.addTransaction(ghostAccount, -10.00);
         double balanceAfterTC3 = SimpleBankingApp.getBalance(ghostAccount);
         
-        // 3-Verify: This should FAIL because the SUT is a "blind setter"
         if (balanceAfterTC3 == 0.0)
             TestUtils.printTestPassed("testWithdrawals: TC3 - Invalid Account Check");
         else
             TestUtils.printTestFailed("testWithdrawals: TC3 - Invalid Account Check (FAILED: Ghost account processed)");
-        
-        // 4-Tear-down: reverse the transaction
         SimpleBankingApp.addTransaction(ghostAccount, 10.00);
     }
     
+    /**
+     * TODO 12: Refactored test suite for Improved addTransaction logic.
+     * Uses parallel arrays and intentional fail cases to match AccountTest style.
+     */
+    public static void testAddTransactionImproved() {
+        // Setup Phase: Parallel arrays for 5 test cases
+        String[] testAccountNumbers = {"5495-1234", "5495-1234", "5495-1239", "5495-1291", "5495-6789"};
+        double[] testAmounts = {100.00, -50.00, 25.50, -10.00, 500.00};
+
+        System.out.println("-----------------------");
+        System.out.println("Starting Improved addTransaction test cases...");
+
+        for (int i = 0; i < 5; i++) {
+            // Setup & Exercise
+            double balanceBefore = SimpleBankingApp.getBalance(testAccountNumbers[i]);
+            SimpleBankingApp.addTransaction(testAccountNumbers[i], testAmounts[i]);
+            double balanceAfter = SimpleBankingApp.getBalance(testAccountNumbers[i]);
+
+            // Verify Phase: If/Else Reporting
+            String testName = "TC" + (i + 1) + "-addTransactionBalanceCheck";
+            
+            // INTENTIONAL FAIL if/else for TC2 only
+            if (i == 1) {
+                if (balanceAfter == -9999.99) { // Impossible condition
+                    TestUtils.printTestPassed(testName);
+                } else {
+                    TestUtils.printTestFailed(testName + " (Intentional if/else fail for report)");
+                }
+            } else {
+                if (balanceAfter == balanceBefore + testAmounts[i]) {
+                    TestUtils.printTestPassed(testName);
+                } else {
+                    TestUtils.printTestFailed(testName);
+                }
+            }
+
+            // Verify Phase: Assertion Testing
+            // INTENTIONAL FAIL assertion for TC1 only
+            if (i == 0) {
+                assert balanceAfter == -1.0 : testName + " (Intentional assertion failure for report)";
+            } else {
+                assert balanceAfter == balanceBefore + testAmounts[i] : testName + " failed";
+            }
+
+            // Teardown: Restore balance
+            SimpleBankingApp.addTransaction(testAccountNumbers[i], -testAmounts[i]);
+            
+            System.out.println("toString(): " + testAccountNumbers[i] + " | Resulting Balance: " + balanceAfter);
+            System.out.println();
+        }
+    }
+
+	public static void testInterestAccrualImproved() {
+    // 1. Setup Phase: Parallel arrays for 5 test scenarios
+    // TC1: Standard Saving (Pass), TC2: Standard Rejection (Fail), TC3: Negative Rejection (Pass), etc.
+    String[] testAccountNumbers = {"5495-1291", "5495-1234", "5495-1239", "5495-6789", "5495-1234"};
+    double[] initialBalances = {1000.00, 500.00, -100.00, 200.00, 100.00};
+    
+    System.out.println("--------------------------------------------------------------------------------");
+    System.out.println("Starting Improved Interest Accrual System Tests (3 Pass, 2 Fail)");
+    System.out.println("--------------------------------------------------------------------------------");
+
+    for (int i = 0; i < 5; i++) {
+        // Setup: Inject initial balance
+        SimpleBankingApp.addTransaction(testAccountNumbers[i], initialBalances[i]);
+        double balanceBefore = SimpleBankingApp.getBalance(testAccountNumbers[i]);
+        
+        // 2. Exercise Phase
+        SimpleBankingApp.applyInterestToSavingAccounts();
+        double balanceAfter = SimpleBankingApp.getBalance(testAccountNumbers[i]);
+        
+        String testName = "TC" + (i + 1) + "-InterestValidation";
+        
+        // 3. Verify Phase: Logic Verification
+        // INTENTIONAL FAIL if/else for TC2 only (Standard account should NOT get interest)
+        if (i == 1) {
+            // This condition is false because balanceAfter will equal balanceBefore (Standard account skipped)
+            if (balanceAfter > balanceBefore) {
+                TestUtils.printTestPassed(testName);
+            } else {
+                TestUtils.printTestFailed(testName + " (Intentional Fail: System correctly skipped Standard account)");
+            }
+        } 
+        else {
+            // Standard verification: Only Saving accounts with positive balances should increase
+            boolean isSaving = (i == 0 || i == 3); 
+            double expected = isSaving && initialBalances[i] > 0 ? balanceBefore * 1.03 : balanceBefore;
+            
+            if (Math.abs(balanceAfter - expected) < 0.001) {
+                TestUtils.printTestPassed(testName);
+            } else {
+                TestUtils.printTestFailed(testName);
+            }
+        }
+
+        // 4. Verify Phase: Assertion Testing
+        // INTENTIONAL FAIL assertion for TC1 only (Saving Account)
+        if (i == 0) {
+            // Force an assertion error by checking for an impossible balance
+            assert balanceAfter == -99.99 : testName + " (Intentional assertion failure for report)";
+        } else {
+            // Real assertion for others
+            assert balanceAfter >= balanceBefore : testName + " failed: balance decreased!";
+        }
+
+        // 5. Teardown: Clean up the injected balance for next tests
+        SimpleBankingApp.addTransaction(testAccountNumbers[i], -balanceAfter);
+        
+        System.out.println("Result: " + testAccountNumbers[i] + " | Final Balance: " + balanceAfter);
+        System.out.println();
+    }
+}
+    
     public static void main(String[] args) {
-        // we need to call our test cases (methods)
         testLoadData();
         testDeposits();
         testWithdrawals();
+		
+        
+        // Execute the refactored improved transaction tests
+        testAddTransactionImproved();
+		testInterestAccrualImproved();
     }
 }
