@@ -128,6 +128,34 @@ public class SimpleBankingApp {
     }
 }
 
+/**
+ * New Feature: Multi-Currency Balance Reporter
+ * Displays all account balances converted into USD, EUR, and GBP.
+ */
+public static void displayBalancesInMultiCurrency() {
+    // Exchange rates as defined in the enhancement requirements
+    double USD_TO_EUR = 0.92;
+    double USD_TO_GBP = 0.79;
+
+    System.out.println("\n====================================================================");
+    System.out.println("Global Multi-Currency Balance Report");
+    System.out.println("====================================================================");
+    System.out.format("%-12s | %-12s | %-12s | %-12s\n", "Account #", "USD (Base)", "EUR (0.92)", "GBP (0.79)");
+    System.out.println("--------------------------------------------------------------------");
+
+    for (Account account : accounts) {
+        String accNum = account.getAccountNumber();
+        double balanceUSD = getBalance(accNum); // Leverages existing logic for data integrity
+        
+        double balanceEUR = balanceUSD * USD_TO_EUR;
+        double balanceGBP = balanceUSD * USD_TO_GBP;
+
+        System.out.format("%-12s | $%-11.2f | €%-11.2f | £%-11.2f\n", 
+                          accNum, balanceUSD, balanceEUR, balanceGBP);
+    }
+    System.out.println("====================================================================\n");
+}
+
     
     
     public static void main(String[] args) {
@@ -145,6 +173,7 @@ public class SimpleBankingApp {
         addTransaction("5495-1234", 520.00);
         addTransaction("9999-1111", 21.00); 
         applyInterestToSavingAccounts(); 
+        displayBalancesInMultiCurrency();
         
         System.out.println("Account: after the 2nd/3rd addTransaction function calls...");
         printAllAccounts();
