@@ -92,34 +92,48 @@ public class SimpleBankingAppTest {
     }
     
     /**
-     * TODO 12: Refactored test suite for Improved addTransaction logic.
-     * Uses parallel arrays and intentional fail cases to match AccountTest style.
+     * TODO 12: Final Refined test suite for Improved addTransaction logic.
+     * Verifies Account existence, Relational User Integrity, and Overdraft protection.
      */
-    public static void testAddTransactionImproved() {
+    public static void testAddTransaction() {
         // Setup Phase: Parallel arrays for 5 test cases
+        // TC5: David McDonald (5495-6789) - Owner exists in Accounts but NOT in Users.
         String[] testAccountNumbers = {"5495-1234", "5495-1234", "5495-1239", "5495-1291", "5495-6789"};
         double[] testAmounts = {100.00, -50.00, 25.50, -10.00, 500.00};
 
-        System.out.println("-----------------------");
-        System.out.println("Starting Improved addTransaction test cases...");
+        System.out.println("--------------------------------------------------------------------------------");
+        System.out.println("Starting FINAL Improved addTransaction System Tests (4 Pass, 1 Security Gate)");
+        System.out.println("--------------------------------------------------------------------------------");
 
         for (int i = 0; i < 5; i++) {
-            // Setup & Exercise
+            // 1. Setup Phase
             double balanceBefore = SimpleBankingApp.getBalance(testAccountNumbers[i]);
+            
+            // 2. Exercise Phase
             SimpleBankingApp.addTransaction(testAccountNumbers[i], testAmounts[i]);
             double balanceAfter = SimpleBankingApp.getBalance(testAccountNumbers[i]);
 
-            // Verify Phase: If/Else Reporting
+            // 3. Verify Phase: Logic Verification
             String testName = "TC" + (i + 1) + "-addTransactionBalanceCheck";
             
-            // INTENTIONAL FAIL if/else for TC2 only
-            if (i == 1) {
-                if (balanceAfter == -9999.99) { // Impossible condition
+            // Special Logic for TC5 (David McDonald / Security Violation)
+            if (testAccountNumbers[i].equals("5495-6789")) {
+                // If logic is correct, the balance should NOT have changed because he is not a valid User
+                if (balanceAfter == balanceBefore) {
+                    TestUtils.printTestPassed(testName + " (Correctly Rejected: User Integrity Gate)");
+                } else {
+                    TestUtils.printTestFailed(testName + " (FAILED: Relational Integrity bypassed!)");
+                }
+            } 
+            // INTENTIONAL FAIL if/else for TC2 only (Overdraft check)
+            else if (i == 1) {
+                if (balanceAfter == -9999.99) { // Impossible check for report color
                     TestUtils.printTestPassed(testName);
                 } else {
                     TestUtils.printTestFailed(testName + " (Intentional if/else fail for report)");
                 }
-            } else {
+            } 
+            else {
                 if (balanceAfter == balanceBefore + testAmounts[i]) {
                     TestUtils.printTestPassed(testName);
                 } else {
@@ -127,22 +141,23 @@ public class SimpleBankingAppTest {
                 }
             }
 
-            // Verify Phase: Assertion Testing
-            // INTENTIONAL FAIL assertion for TC1 only
+            // 4. Verify Phase: Assertion Testing (THE RIGOROUS GATEKEEPER)
+            // INTENTIONAL FAIL assertion for TC1 only to provide the crash screenshot
             if (i == 0) {
                 assert balanceAfter == -1.0 : testName + " (Intentional assertion failure for report)";
+            } else if (testAccountNumbers[i].equals("5495-6789")) {
+                assert balanceAfter == balanceBefore : testName + " Security Breach: Invalid User processed!";
             } else {
                 assert balanceAfter == balanceBefore + testAmounts[i] : testName + " failed";
             }
 
-            // Teardown: Restore balance
+            // 5. Teardown: Clean up state
             SimpleBankingApp.addTransaction(testAccountNumbers[i], -testAmounts[i]);
             
-            System.out.println("toString(): " + testAccountNumbers[i] + " | Resulting Balance: " + balanceAfter);
+            System.out.println("Result for: " + testAccountNumbers[i] + " | Current Balance: $" + balanceAfter);
             System.out.println();
         }
     }
-
 	public static void testInterestAccrualImproved() {
     // 1. Setup Phase: Parallel arrays for 5 test scenarios
     // TC1: Standard Saving (Pass), TC2: Standard Rejection (Fail), TC3: Negative Rejection (Pass), etc.
@@ -246,7 +261,7 @@ public static void testRobustTransactionLogic() {
 		
         
         // Execute the refactored improved transaction tests
-        testAddTransactionImproved();
+        testAddTransaction();
 		testInterestAccrualImproved();
 		testRobustTransactionLogic();
 

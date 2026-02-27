@@ -3,7 +3,6 @@ package app;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Vector;
 
 import model.Account;
@@ -68,34 +67,54 @@ public class SimpleBankingApp {
         System.out.println();
     }
     
-  public static void addTransaction(String accountNumber, double amount) {
-    // First, we must validate if the account exists in the system registry
-    boolean accountExists = false;
+ /**
+ * Improved addTransaction for TODO 12.
+ * Implements Account Validation, User-Account Cross-Referencing, 
+ * and Overdraft Protection.
+ */
+public static void addTransaction(String accountNumber, double amount) {
+    // 1. Account Existence Check
+    Account targetAccount = null;
     for (Account account : accounts) {
         if (account.getAccountNumber().equals(accountNumber)) {
-            accountExists = true;
+            targetAccount = account;
             break;
         }
     }
 
-    // If the account number is not found, we reject the transaction immediately
-    if (!accountExists) {
-        System.err.println("Transaction Rejected: The account " + accountNumber + " was not found in our records.");
-        return;
+    if (targetAccount == null) {
+        System.err.println("Transaction Rejected: Account " + accountNumber + " was not found.");
+        return; // Prevents "Ghost Account" processing
     }
 
-    // Second, we implement overdraft protection to prevent negative balances
-    if (amount < 0) {
-        double currentBalance = getBalance(accountNumber);
-        if (currentBalance + amount < 0) {
-            System.err.println("Transaction Rejected: Insufficient funds in account " + accountNumber);
-            System.err.println("Current Balance: $" + currentBalance + " | Attempted Withdrawal: $" + Math.abs(amount));
-            return;
+    //User Integrity Check 
+    boolean userExists = false;
+    for (User user : users) {
+        if (user.getUserName().equals(targetAccount.getUsernameOfAccountHolder())) {
+            userExists = true;
+            break;
         }
     }
 
-    // Only if both validations pass do we create the transaction and add it to the vector
-    Transaction aTransaction = new Transaction(accountNumber, amount, Calendar.getInstance().getTime());
+    if (!userExists) {
+        System.err.println("Security Violation: Account owner '" + 
+                           targetAccount.getUsernameOfAccountHolder() + "' does not exist in the system registry!");
+        return;
+    }
+
+    //Overdraft Protection
+    if (amount < 0) { // Only check for withdrawals
+        double currentBalance = getBalance(accountNumber);
+        if (currentBalance + amount < 0) {
+            System.err.println("Transaction Rejected: Insufficient funds in account " + accountNumber);
+            System.err.format("Current Balance: $%.2f | Attempted Withdrawal: $%.2f\n", 
+                              currentBalance, Math.abs(amount));
+            return; // Prevents negative balances
+        }
+    }
+
+    // Only reached if ALL three security gates pass successfully
+    Transaction aTransaction = new Transaction(accountNumber, amount, java.util.Calendar.getInstance().getTime());
     transactions.add(aTransaction);
     System.out.println("Transaction successfully processed for account " + accountNumber);
 }
@@ -172,6 +191,8 @@ public static void displayBalancesInMultiCurrency() {
         
         addTransaction("5495-1234", 520.00);
         addTransaction("9999-1111", 21.00); 
+        System.out.println("\n--- Testing Security Gate for Orphaned Account ---");
+        SimpleBankingApp.addTransaction("5495-6789", 10.0); // David McDonald's account
         applyInterestToSavingAccounts(); 
         displayBalancesInMultiCurrency();
         
