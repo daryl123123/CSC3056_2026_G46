@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+    <!-- JRE: use the workspace default (Java 11 or later recommended) -->
+    <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+
+    <!-- Source folder: all .java files live under src/ -->
+    <classpathentry kind="src" path="src"/>
+
+    <!-- Compiled .class output -->
+    <classpathentry kind="output" path="bin"/>
+
+    <!-- JUnit 4 -->
+    <classpathentry kind="lib" path="lib/junit.jar"/>
+
+    <!-- JFreeChart library under test -->
+    <classpathentry kind="lib" path="lib/jfreechart.jar"/>
+
+    <!-- JCommon dependency required by JFreeChart -->
+    <classpathentry kind="lib" path="lib/jcommon-1.0.5.jar"/>
+</classpath>
