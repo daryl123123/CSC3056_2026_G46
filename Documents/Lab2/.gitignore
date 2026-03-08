@@ -1,0 +1,14 @@
+.project
+.classpath
+.settings/
+.vscode/
+
+bin/
+target/
+*.class
+
+doc/
+
+*.log
+*.tmp
+.DS_Store
